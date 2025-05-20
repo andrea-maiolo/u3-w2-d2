@@ -1,22 +1,19 @@
-import { Component } from "react";
+import { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 
-class AddComment extends Component {
-  state = {
-    commentToPost: {
-      author: "",
-      comment: "",
-      rate: 1,
-      elementId: this.props.bookId,
-    },
-  };
+const AddComment = (props) => {
+  const [commentToPost, setCommentToPost] = useState({
+    comment: "",
+    rate: 1,
+    elementId: props.bookId,
+  });
 
-  handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     fetch("https://striveschool-api.herokuapp.com/api/comments/", {
       method: "POST",
-      body: JSON.stringify(this.state.commentToPost),
+      body: JSON.stringify(commentToPost),
       headers: {
         "Content-Type": "application/json",
         Authorization:
@@ -38,43 +35,37 @@ class AddComment extends Component {
       });
   };
 
-  handleChange = (propertyName, propertyValue) => {
-    this.setState({ commentToPost: { ...this.state.commentToPost, [propertyName]: propertyValue } });
+  const handleChange = (propertyName, propertyValue) => {
+    setCommentToPost({ ...commentToPost, [propertyName]: propertyValue });
   };
 
-  render() {
-    return (
-      <Form onSubmit={this.handleSubmit}>
-        <Form.Group className="mb-3" controlId="commentText">
-          <Form.Label>scrivi un commento</Form.Label>
-          <Form.Control type="text" required value={this.state.commentToPost.comment} onChange={(e) => this.handleChange("comment", e.target.value)} />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="author">
-          <Form.Label>la tua email</Form.Label>
-          <Form.Control type="email" required value={this.state.commentToPost.author} onChange={(e) => this.handleChange("author", e.target.value)} />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="rating">
-          <Form.Label>Rating</Form.Label>
-          <Form.Select
-            value={this.state.commentToPost.rate}
-            onChange={(e) => {
-              this.handleChange("rate", e.target.value);
-            }}
-            required
-          >
-            <option value="1">Uno</option>
-            <option value="2">Due</option>
-            <option value="3">Tre</option>
-            <option value="4">Quattro</option>
-            <option value="5">Cinque</option>
-          </Form.Select>
-        </Form.Group>
-        <Button variant="info" type="submit">
-          Posta il commento
-        </Button>
-      </Form>
-    );
-  }
-}
+  return (
+    <Form onSubmit={handleSubmit}>
+      <Form.Group className="mb-3" controlId="commentText">
+        <Form.Label>scrivi un commento</Form.Label>
+        <Form.Control type="text" required value={commentToPost.comment} onChange={(e) => handleChange("comment", e.target.value)} />
+      </Form.Group>
+      <Form.Group className="mb-3" controlId="rating">
+        <Form.Label>Rating</Form.Label>
+        <Form.Select
+          value={commentToPost.rate}
+          onChange={(e) => {
+            handleChange("rate", e.target.value);
+          }}
+          required
+        >
+          <option value="1">Uno</option>
+          <option value="2">Due</option>
+          <option value="3">Tre</option>
+          <option value="4">Quattro</option>
+          <option value="5">Cinque</option>
+        </Form.Select>
+      </Form.Group>
+      <Button variant="info" type="submit">
+        Posta il commento
+      </Button>
+    </Form>
+  );
+};
 
 export default AddComment;

@@ -1,10 +1,9 @@
-import { Component } from "react";
 import { Button, ListGroup } from "react-bootstrap";
 import { Trash } from "react-bootstrap-icons";
 
-class SingleComment extends Component {
-  handleClick = () => {
-    fetch(`https://striveschool-api.herokuapp.com/api/comments/${this.props.commentObj._id}`, {
+const SingleComment = (props) => {
+  const handleClick = () => {
+    fetch(`https://striveschool-api.herokuapp.com/api/comments/${props.commentObj._id}`, {
       method: "DELETE",
       headers: {
         Authorization:
@@ -23,16 +22,14 @@ class SingleComment extends Component {
       });
   };
 
-  render() {
-    return (
-      <ListGroup.Item>
-        {this.props.commentObj.comment} - rate {this.props.commentObj.rate}/5
-        <Button className="p-1 ms-3" onClick={this.handleClick}>
-          <Trash />
-        </Button>
-      </ListGroup.Item>
-    );
-  }
-}
+  return (
+    <ListGroup.Item>
+      {props.commentObj.comment} - rate {props.commentObj.rate}/5
+      <Button className="p-1 ms-3" onClick={handleClick}>
+        <Trash />
+      </Button>
+    </ListGroup.Item>
+  );
+};
 
 export default SingleComment;

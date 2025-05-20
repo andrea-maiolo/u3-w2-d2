@@ -1,17 +1,15 @@
-import { Component } from "react";
 import CommentsList from "./CommentsList";
 import AddComment from "./AddComment";
+import { useEffect, useState } from "react";
 
-class CommentArea extends Component {
-  state = {
-    arrayOfComments: [],
-  };
+const CommentArea = (props) => {
+  const [arrayOfComments, setArrayOfComments] = useState([]);
 
-  fetchingComments = async () => {
+  const fetchingComments = async () => {
     console.log("fetching");
 
     try {
-      const response = await fetch(`https://striveschool-api.herokuapp.com/api/comments/${this.props.bookId}`, {
+      const response = await fetch(`https://striveschool-api.herokuapp.com/api/comments/${props.bookId}`, {
         headers: {
           Authorization:
             "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODE0NzljZTFjMjUwNDAwMTUxYWI2NGUiLCJpYXQiOjE3NDczMTEyODcsImV4cCI6MTc0ODUyMDg4N30._DZV1gVqDRIqvSd0DKY6yrH7gf8IOmEaFxuIk_XOT-M",
@@ -22,27 +20,22 @@ class CommentArea extends Component {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
-      this.setState({ arrayOfComments: data });
+      setArrayOfComments(data);
     } catch (error) {
       console.log(error);
     }
   };
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.bookId !== this.props.bookId) {
-      this.fetchingComments();
-    }
-  }
-  render() {
-    console.log(this.props.bookId);
+  useEffect(() => {
+    fetchingComments();
+  }, [props.bookId]);
 
-    return (
-      <>
-        <CommentsList arrayOfComments={this.state.arrayOfComments} />
-        <AddComment bookId={this.props.bookId} />
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <CommentsList arrayOfComments={arrayOfComments} />
+      <AddComment bookId={props.bookId} />
+    </>
+  );
+};
 
 export default CommentArea;
